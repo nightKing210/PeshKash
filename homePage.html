@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PeshKash</title>
+  <link rel="icon" type="image/x-icon" href="logo.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-gray-800 px-6 py-4 flex flex-wrap justify-between items-center shadow-md">
+    <h1 class="text-xl sm:text-2xl font-bold text-yellow-400">🎬 پیشکش</h1>
+    <ul class="flex flex-wrap justify-center sm:justify-end space-x-4 sm:space-x-6 text-gray-300 text-sm sm:text-base w-full sm:w-auto">
+      <li><a href="index.html" class="hover:text-yellow-400 transition">Home</a></li>
+      <li><a href="about.html" class="hover:text-yellow-400 transition">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- Search Section -->
+  <div class="text-center mt-10 px-4">
+    <p class="inline font-bold text-base sm:text-lg">Search Here:</p>
+    <div class="mt-3 flex flex-col sm:flex-row justify-center items-center gap-3">
+      <input 
+        type="text" 
+        id="movie"
+        placeholder="Search for a movie..." 
+        class="p-2 px-5 w-full sm:w-72 bg-gray-700 text-gray-100 rounded-full outline-none 
+               border border-gray-600 placeholder-gray-400
+               focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400
+               hover:border-yellow-400 hover:bg-gray-700/90
+               transition-all duration-300"
+      />
+      <button id="click" 
+        class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-5 py-2 rounded-full transition-all w-full sm:w-auto">
+        Search
+      </button>
+    </div>
+  </div>
+
+  <!-- Movie Info -->
+  <div id="movie-info" class="text-center mt-10 hidden px-4 pb-10">
+    <div class="max-w-3xl mx-auto bg-gray-800/70 rounded-2xl p-6 shadow-xl">
+      <img id="poster" src="" alt="Movie Poster" class="mx-auto rounded-lg shadow-lg mb-4 w-40 sm:w-52 h-auto">
+
+      <h2 id="title" class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-2"></h2>
+      <p id="released" class="text-gray-300 mb-1"></p>
+      <p id="runtime" class="text-gray-300 mb-1"></p>
+      <p id="genre" class="text-gray-300 mb-1"></p>
+      <p id="director" class="text-gray-300 mb-3"></p>
+
+      <p id="plot" class="text-gray-400 max-w-lg mx-auto mb-3"></p>
+      <p id="language" class="text-gray-300 mb-1"></p>
+      <p id="awards" class="text-yellow-400 font-semibold mb-1"></p>
+      <p id="rating" class="text-green-400 mb-1 mr-1 inline "></p>
+      <p id="votes" class="text-gray-400 mb-1 inline"></p>
+     
+    </div>
+  </div>
+
+  <script>
+    const apiKey = "ad375bd9";
+    const btn = document.getElementById("click");
+
+    btn.addEventListener("click", () => {
+      const movieName = document.getElementById("movie").value.trim();
+
+      if (!movieName) {
+        alert("Please enter a movie name!");
+        return;
+      }
+
+      const url = `https://www.omdbapi.com/?apikey=${apiKey}&t=${movieName}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.Response === "False") {
+            alert("Movie not found!");
+            return;
+          }
+
+          document.getElementById("movie-info").classList.remove("hidden");
+          document.getElementById("title").textContent = data.Title;
+          document.getElementById("released").textContent = `Released: ${data.Released}`;
+          document.getElementById("runtime").textContent = `Runtime: ${data.Runtime}`;
+          document.getElementById("genre").textContent = `Genre: ${data.Genre}`;
+          document.getElementById("director").textContent = `Director: ${data.Director}`;
+          document.getElementById("plot").textContent = data.Plot;
+          document.getElementById("language").textContent = `Language: ${data.Language}`;
+          document.getElementById("awards").textContent = `Awards: ${data.Awards}`;
+          document.getElementById("rating").textContent = `IMDb Rating: ⭐ ${data.imdbRating}`;
+          document.getElementById("votes").textContent = `(${data.imdbVotes})`;
+          document.getElementById("poster").src = data.Poster;
+        })
+        .catch(error => {
+          console.error("Error fetching movie data:", error);
+        });
+    });
+  </script>
+
+</body>
+</html>
